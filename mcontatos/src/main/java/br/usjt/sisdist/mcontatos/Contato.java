@@ -2,6 +2,7 @@ package br.usjt.sisdist.mcontatos;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -16,6 +17,7 @@ public class Contato implements Serializable {
 	private String nome;
 	private String email;
 	private String telefone;
+	@Column(length=500000)
 	private String imagem;
 	
 	
