@@ -1,4 +1,4 @@
-package br.usjt.sisdist.meuscontatos;
+package br.usjt.sisdist.meuscontatos.controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +17,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.usjt.sisdist.meuscontatos.model.Contato;
+import br.usjt.sisdist.meuscontatos.repository.ContatoRepository;
+import br.usjt.sisdist.meuscontatos.service.ContatoService;
+
 @RestController
 @RequestMapping("/api")
 public class ContatoApiController {
 	
+
 	@Autowired
-	ContatoRepository contatoRepository;
+	ContatoService contatoService;
+	
 	
 	  @GetMapping("/contatos")
 	  public ResponseEntity<List<Contato>> getAllContatos() {
@@ -30,7 +36,7 @@ public class ContatoApiController {
 	      List<Contato> contatos = new ArrayList<Contato>();
 
 
-	      contatoRepository.findAll().forEach(contatos::add);
+	      contatoService.findAll().forEach(contatos::add);
 
 
 	      if (contatos.isEmpty()) {
@@ -45,7 +51,7 @@ public class ContatoApiController {
 	
 	  @GetMapping("/contato/{id}")
 	  public ResponseEntity<Contato> getContatoById(@PathVariable("id") long id) {
-	    Optional<Contato> contatoData = contatoRepository.findById(id);
+	    Optional<Contato> contatoData = contatoService.findById(id);
 
 	    if (contatoData.isPresent()) {
 	      return new ResponseEntity<>(contatoData.get(), HttpStatus.OK);
@@ -58,7 +64,7 @@ public class ContatoApiController {
 	  @PostMapping("/contato")
 	  public ResponseEntity<Contato> createContato(@RequestBody Contato contato) {
 	    try {
-	      Contato _contato = contatoRepository
+	      Contato _contato = contatoService
 	          .save(new Contato(contato.getNome(), contato.getEmail(), contato.getTelefone(), contato.getImagem()));
 	      return new ResponseEntity<>(_contato, HttpStatus.CREATED);
 	    } catch (Exception e) {
@@ -68,7 +74,7 @@ public class ContatoApiController {
 	  
 	  @PutMapping("/contato/{id}")
 	  public ResponseEntity<Contato> updateContato(@PathVariable("id") long id, @RequestBody Contato contato) {
-	    Optional<Contato> contatoData = contatoRepository.findById(id);
+	    Optional<Contato> contatoData = contatoService.findById(id);
 
 	    if (contatoData.isPresent()) {
 	      Contato _contato = contatoData.get();
@@ -76,7 +82,7 @@ public class ContatoApiController {
 	      _contato.setEmail(contato.getEmail());
 	      _contato.setTelefone(contato.getTelefone());
 	      _contato.setImagem(contato.getImagem());	      
-	      return new ResponseEntity<>(contatoRepository.save(_contato), HttpStatus.OK);
+	      return new ResponseEntity<>(contatoService.save(_contato), HttpStatus.OK);
 	    } else {
 	      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	    }
@@ -85,7 +91,7 @@ public class ContatoApiController {
 	  @DeleteMapping("/contato/{id}")
 	  public ResponseEntity<HttpStatus> deleteTutorial(@PathVariable("id") long id) {
 	    try {
-	      contatoRepository.deleteById(id);
+	      contatoService.deleteById(id);
 	      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	    } catch (Exception e) {
 	      return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

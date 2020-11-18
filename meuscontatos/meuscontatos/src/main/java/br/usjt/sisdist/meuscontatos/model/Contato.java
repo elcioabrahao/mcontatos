@@ -1,4 +1,4 @@
-package br.usjt.sisdist.meuscontatos;
+package br.usjt.sisdist.meuscontatos.model;
 
 import java.io.Serializable;
 
