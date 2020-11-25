@@ -57,6 +57,24 @@ public class UsuarioApiController {
 	    }
 	  }
 	  
+	  @PostMapping("/usuario/autenticar")
+	  public ResponseEntity<Usuario> getUsuario(@RequestBody Usuario usuario) {
+		  
+	    Optional<Usuario> UsuarioData = usuarioService.findByEmail(usuario.getEmail());
+
+	    if (UsuarioData.isPresent()) {
+	    	
+	    	if(UsuarioData.get().getSenha().equals(usuario.getSenha())) {
+	    		return new ResponseEntity<>(UsuarioData.get(), HttpStatus.OK);
+	    	}else {
+	    		return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+	    	}
+
+	    } else {
+	      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	    }
+	  }
+	  
 	  
 	  @PostMapping("/usuario")
 	  public ResponseEntity<Usuario> createUsuario(@RequestBody Usuario Usuario) {

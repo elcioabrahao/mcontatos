@@ -19,15 +19,17 @@ public class Contato implements Serializable {
 	private String telefone;
 	@Column(length = 500000)
 	private String imagem;
+	private Long remoto;
 	
 	
 	
-	public Contato(String nome, String email, String telefone, String imagem) {
+	public Contato(String nome, String email, String telefone, String imagem, Long remoto) {
 		super();
 		this.nome = nome;
 		this.email = email;
 		this.telefone = telefone;
 		this.imagem = imagem;
+		this.remoto = remoto;
 	}
 	
 	
@@ -67,6 +69,20 @@ public class Contato implements Serializable {
 	public void setImagem(String imagem) {
 		this.imagem = imagem;
 	}
+	
+	
+	public Long getRemoto() {
+		return remoto;
+	}
+
+
+
+	public void setRemoto(Long remoto) {
+		this.remoto = remoto;
+	}
+
+
+
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}

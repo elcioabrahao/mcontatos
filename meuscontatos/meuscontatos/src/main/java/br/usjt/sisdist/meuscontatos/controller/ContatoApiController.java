@@ -30,13 +30,13 @@ public class ContatoApiController {
 	ContatoService contatoService;
 	
 	
-	  @GetMapping("/contatos")
-	  public ResponseEntity<List<Contato>> getAllContatos() {
+	  @GetMapping("/contatos/{id}")
+	  public ResponseEntity<List<Contato>> getAllContatosByRemoteId(@PathVariable("id") long id) {
 	    try {
 	      List<Contato> contatos = new ArrayList<Contato>();
 
 
-	      contatoService.findAll().forEach(contatos::add);
+	      contatoService.findAllByIdRemote(id).forEach(contatos::add);
 
 
 	      if (contatos.isEmpty()) {
@@ -65,7 +65,7 @@ public class ContatoApiController {
 	  public ResponseEntity<Contato> createContato(@RequestBody Contato contato) {
 	    try {
 	      Contato _contato = contatoService
-	          .save(new Contato(contato.getNome(), contato.getEmail(), contato.getTelefone(), contato.getImagem()));
+	          .save(new Contato(contato.getNome(), contato.getEmail(), contato.getTelefone(), contato.getImagem(), contato.getRemoto()));
 	      return new ResponseEntity<>(_contato, HttpStatus.CREATED);
 	    } catch (Exception e) {
 	      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -81,7 +81,8 @@ public class ContatoApiController {
 	      _contato.setNome(contato.getNome());
 	      _contato.setEmail(contato.getEmail());
 	      _contato.setTelefone(contato.getTelefone());
-	      _contato.setImagem(contato.getImagem());	      
+	      _contato.setImagem(contato.getImagem());	  
+	      _contato.setRemoto(contato.getRemoto());	  
 	      return new ResponseEntity<>(contatoService.save(_contato), HttpStatus.OK);
 	    } else {
 	      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
