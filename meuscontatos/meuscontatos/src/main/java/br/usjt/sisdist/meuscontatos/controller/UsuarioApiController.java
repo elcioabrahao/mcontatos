@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,14 +18,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.usjt.sisdist.meuscontatos.model.Usuario;
-import br.usjt.sisdist.meuscontatos.service.UsuarioService;
+import br.usjt.sisdist.meuscontatos.service.UsuarioServiceImpl;
 
 @RestController
 @RequestMapping("/api")
 public class UsuarioApiController {
 	
 	@Autowired
-	UsuarioService usuarioService;
+	UsuarioServiceImpl usuarioService;
+	
+	@Autowired
+	BCryptPasswordEncoder bCryptPasswordEncoder;
 	
 	
 	  @GetMapping("/usuarios")
@@ -64,7 +68,7 @@ public class UsuarioApiController {
 
 	    if (UsuarioData.isPresent()) {
 	    	
-	    	if(UsuarioData.get().getSenha().equals(usuario.getSenha())) {
+	    	if(UsuarioData.get().getSenha().equals(bCryptPasswordEncoder.encode(usuario.getSenha()))) {
 	    		return new ResponseEntity<>(UsuarioData.get(), HttpStatus.OK);
 	    	}else {
 	    		return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -76,12 +80,12 @@ public class UsuarioApiController {
 	  }
 	  
 	  
-	  @PostMapping("/usuario")
+	  @PostMapping("/usuario/novo")
 	  public ResponseEntity<Usuario> createUsuario(@RequestBody Usuario Usuario) {
 	    try {
 	      Usuario _Usuario = usuarioService
-	          .save(new Usuario(Usuario.getNome(), Usuario.getCpf(), Usuario.getEmail(), Usuario.getSenha()));
-	      return new ResponseEntity<>(_Usuario, HttpStatus.CREATED);
+	          .save(new Usuario(Usuario.getNome(), Usuario.getCpf(), Usuario.getEmail(), bCryptPasswordEncoder.encode(Usuario.getSenha())));
+	      return new ResponseEntity<>(Usuario, HttpStatus.CREATED);
 	    } catch (Exception e) {
 	      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
