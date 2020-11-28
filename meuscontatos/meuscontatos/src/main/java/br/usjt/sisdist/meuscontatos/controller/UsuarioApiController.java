@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,9 @@ public class UsuarioApiController {
 	@Autowired
 	UsuarioService usuarioService;
 	
+	@Autowired
+	BCryptPasswordEncoder bCryptPasswordEncoder;
+	
 	
 	  @GetMapping("/usuarios")
 	  public ResponseEntity<List<Usuario>> getAllUsuarios() {
@@ -33,7 +37,10 @@ public class UsuarioApiController {
 	      List<Usuario> usuarios = new ArrayList<Usuario>();
 
 
-	      usuarioService.findAll().forEach(usuarios::add);
+	      for(Usuario us:  usuarioService.findAll()) {
+	    	  us.setSenha("");
+	    	  usuarios.add(us);
+	      }
 
 
 	      if (usuarios.isEmpty()) {
@@ -76,12 +83,13 @@ public class UsuarioApiController {
 	  }
 	  
 	  
-	  @PostMapping("/usuario")
-	  public ResponseEntity<Usuario> createUsuario(@RequestBody Usuario Usuario) {
+	  @PostMapping("/usuario/novo")
+	  public ResponseEntity<Usuario> createUsuario(@RequestBody Usuario usuario) {
 	    try {
 	      Usuario _Usuario = usuarioService
-	          .save(new Usuario(Usuario.getNome(), Usuario.getCpf(), Usuario.getEmail(), Usuario.getSenha()));
-	      return new ResponseEntity<>(_Usuario, HttpStatus.CREATED);
+	          .save(new Usuario(usuario.getNome(), usuario.getCpf(), usuario.getEmail(), bCryptPasswordEncoder.encode(usuario.getSenha())));
+	      usuario.setId(_Usuario.getId());
+	      return new ResponseEntity<>(usuario, HttpStatus.CREATED);
 	    } catch (Exception e) {
 	      return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 	    }
