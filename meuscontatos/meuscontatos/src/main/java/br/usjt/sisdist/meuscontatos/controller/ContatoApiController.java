@@ -36,7 +36,7 @@ public class ContatoApiController {
 	      List<Contato> contatos = new ArrayList<Contato>();
 
 
-	      contatoService.findAllByIdRemote(id).forEach(contatos::add);
+	      contatoService.findAllByRemote(id).forEach(contatos::add);
 
 
 	      if (contatos.isEmpty()) {

@@ -8,6 +8,6 @@ import br.usjt.sisdist.meuscontatos.model.Contato;
 
 public interface ContatoRepository extends JpaRepository<Contato, Long> {
 	
-	public List<Contato> findAllContatosByRemoto(Long remote);
+	public List<Contato> findAllByRemoto(Long remote);
 
 }

@@ -15,8 +15,8 @@ public class ContatoService {
 	@Autowired
 	ContatoRepository contatoRepository;
 	
-	public List<Contato> findAllByIdRemote(Long id){
-		return contatoRepository.findAllContatosByRemoto(id);
+	public List<Contato> findAllByRemote(Long id){
+		return contatoRepository.findAllByRemoto(id);
 	}
 
 	public Optional<Contato> findById(Long id) {

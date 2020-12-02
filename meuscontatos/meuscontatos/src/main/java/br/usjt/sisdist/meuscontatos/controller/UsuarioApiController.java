@@ -68,14 +68,17 @@ public class UsuarioApiController {
 	  public ResponseEntity<Usuario> getUsuario(@RequestBody Usuario usuario) {
 		  
 	    Optional<Usuario> UsuarioData = usuarioService.findByEmail(usuario.getEmail());
+	    
+//	    System.out.println("Senha da chamada   :"+usuario.getSenha());
+//	    System.out.println("Senha da encriptada:"+bCryptPasswordEncoder.encode(usuario.getSenha()));
+//	    System.out.println("Senha do banco     :"+UsuarioData.get().getSenha());
 
 	    if (UsuarioData.isPresent()) {
 	    	
-	    	if(UsuarioData.get().getSenha().equals(usuario.getSenha())) {
-	    		return new ResponseEntity<>(UsuarioData.get(), HttpStatus.OK);
-	    	}else {
-	    		return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-	    	}
+	    	Usuario us = UsuarioData.get();
+	    	us.setSenha(usuario.getSenha());
+	    	
+   		return new ResponseEntity<>(us, HttpStatus.OK);
 
 	    } else {
 	      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
